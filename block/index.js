@@ -266,7 +266,31 @@
 		edit: Edit,
 		save: Save,
 		deprecated: [
-			{ attributes: DEPRECATED_ATTRS, save: saveV1cite }
+			{
+				attributes: DEPRECATED_ATTRS,
+				// MUST match block.json's supports, or useBlockProps.save in the
+				// deprecation won't reproduce the color/border/shadow/spacing/type
+				// classes the v1.0.x markup carries, and the block fails to validate.
+				supports: {
+					anchor: true,
+					html: false,
+					className: true,
+					color: { background: true, text: true, gradients: true, link: false },
+					__experimentalBorder: {
+						color: true, radius: true, style: true, width: true,
+						__experimentalDefaultControls: { color: true, radius: true, width: true }
+					},
+					shadow: true,
+					spacing: { margin: true, padding: true },
+					typography: {
+						fontSize: true, lineHeight: true,
+						__experimentalFontStyle: true, __experimentalFontWeight: true,
+						__experimentalLetterSpacing: true, __experimentalTextTransform: true,
+						__experimentalTextDecoration: true
+					}
+				},
+				save: saveV1cite
+			}
 		]
 	} );
 } )( window.wp.blocks, window.wp.element, window.wp.blockEditor, window.wp.components, window.wp.i18n );

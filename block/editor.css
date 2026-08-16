@@ -8,4 +8,9 @@
 .wp-block[data-type="wrap-quote/wrap-quote"] {
 	margin-top: 0;
 	margin-bottom: 0;
+	/* A floated block sits in the text flow, so the wrapping paragraph's editable
+	 * box overlaps the quote and steals the click (you land in the paragraph, not
+	 * the quote). Lift the block so it wins the pointer in the editor. */
+	position: relative;
+	z-index: 1;
 }
