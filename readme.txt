@@ -37,6 +37,10 @@ The block saves as plain HTML with inline styles, so published posts keep render
 
 Place the Wrap Quote block where you want the quote to sit, then type (or keep) the paragraphs after it. Those paragraphs flow around the floated quote automatically.
 
+= Does the paragraph above the quote wrap around it too? =
+
+No, and this is a browser rule rather than a plugin limit. A floated element only affects the text that comes after it; making earlier text wrap around an element needs CSS Exclusions, which no current browser supports. To get text above the quote, raise the **Vertical offset**: it drops the quote down into the paragraph that follows, so that paragraph flows across the top of the quote and then wraps beside and below it, above, around, and under, all from the copy after the block.
+
 = Can I change how the card looks? =
 
 Yes. The block uses the standard WordPress Color, Border, Shadow, Dimensions, and Typography panels, so you can set the background, border, radius, shadow, padding, and text styling to whatever you like. Switch to the **Plain** block style to remove the card entirely.

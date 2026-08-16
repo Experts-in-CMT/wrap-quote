@@ -42,8 +42,8 @@
 		}
 	},
 	"styles": [
-		{ "name": "card", "label": "Card", "isDefault": true },
-		{ "name": "plain", "label": "Plain" }
+		{ "name": "default", "label": "Default", "isDefault": true },
+		{ "name": "card", "label": "Card" }
 	],
 	"attributes": {
 		"quote": { "type": "string", "source": "html", "selector": "blockquote", "multiline": "p", "default": "" },
@@ -51,7 +51,11 @@
 		"side": { "type": "string", "default": "right" },
 		"width": { "type": "number", "default": 320 },
 		"gap": { "type": "number", "default": 24 },
-		"showMark": { "type": "boolean", "default": true }
+		"offsetX": { "type": "number", "default": 0 },
+		"offsetY": { "type": "number", "default": 0 },
+		"textAlign": { "type": "string", "default": "left" },
+		"showMark": { "type": "boolean", "default": true },
+		"markGlyph": { "type": "string", "default": "double" }
 	},
 	"editorScript": "wrap-quote-editor",
 	"style": "wrap-quote-style",

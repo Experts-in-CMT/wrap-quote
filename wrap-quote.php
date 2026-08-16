@@ -64,7 +64,7 @@ add_action( 'init', function () {
 	wp_register_script(
 		'wrap-quote-editor',
 		$url . '/index.js',
-		array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n' ),
+		array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n', 'wp-dom' ),
 		$ver( 'index.js' ),
 		true
 	);

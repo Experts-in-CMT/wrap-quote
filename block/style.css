@@ -1,84 +1,114 @@
 /**
  * Wrap Quote — shared front-end + editor styles.
  *
- * The per-instance bits (width, text-side gap) are set inline by save(); this
- * file supplies the structural float, the default card look, the quote mark,
- * and the responsive fallback the inline styles can't express.
+ * The DEFAULT look emulates a press-release "embedded quote": a floated quote
+ * (no card) with prominent open + close smart-quote marks, a medium-weight quote
+ * a touch larger than body copy, and an italic attribution. The optional "Card"
+ * block style (.is-style-card) layers a padded, bordered, shadowed card on top.
  *
- * The <figure class="wrap-quote"> is the block root and the card: block-support
- * styles (background / border / shadow / padding / typography) land on it and
- * override the defaults below. The "Plain" block style (.is-style-plain) strips
- * the card chrome for a bare floated quote.
+ * Per-instance bits (width, text-side gap, offsets) are inline custom properties
+ * set by save(). The <figure class="wrap-quote"> is the block root, so block
+ * supports (color / border / shadow / spacing / typography) land on it and
+ * override these defaults.
  */
 
 .wrap-quote {
 	box-sizing: border-box;
-	margin-top: 0;
 	margin-bottom: 0.5rem;
 	max-width: 100%;
 }
 
-/* =========================================================================
- * FLOAT + WRAP: the quote floats to one side; text-side gap is the margin.
- * (Adapted from the image-text-wrap float engine.)
- * ========================================================================= */
-
-.wrap-quote.align-left {
-	float: left;
-	margin-right: var( --wrap-quote-gap, 1.5rem );
-}
-
-.wrap-quote.align-right {
-	float: right;
-	margin-left: var( --wrap-quote-gap, 1.5rem );
+/*
+ * Vertical offset (Default/embedded style): drop the quote down inside its float
+ * box so the wrapping paragraph flows ABOVE it before wrapping beside and below —
+ * a magazine-style embed. padding-top opens the gap; shape-outside lets the text
+ * into it. Driven by the offset var (shape-outside lives here in CSS, not inline,
+ * so KSES never sees it). Applied only when set (.has-voffset), and scoped out of
+ * the Card style, whose background would fill the gap the text needs.
+ */
+.wrap-quote:not( .is-style-card ).has-voffset {
+	box-sizing: content-box;
+	padding-top: var( --wrap-quote-offset-y, 0px );
+	shape-outside: inset( var( --wrap-quote-offset-y, 0px ) 0px 0px 0px );
 }
 
 /*
- * Constrained layout (WordPress default post/page content): the container is
- * wider than the text column and centers non-aligned blocks with margin:auto.
- * A float ignores auto margins and escapes to the container's far edge, landing
- * in the gutter instead of at the content column. Pull it back to the column so
- * it lines up with the body text. !important is required because WP marks the
- * layout's centering margins !important.
+ * Card WITH a vertical offset: text needs to flow above the card, but a figure
+ * with a background can't leave that gap clear. So the card visual moves to a
+ * ::before layer that starts BELOW the offset; the figure itself goes
+ * transparent and opens the top gap with padding + shape-outside, exactly like
+ * the default style. (Trade-off: with an offset, the block's Color/Border/Shadow
+ * overrides style the figure, not this layer — an edge case.)
  */
-.is-layout-constrained > .wrap-quote.align-left {
-	margin-left: max( 0px, calc( ( 100% - var( --wp--style--global--content-size, 1000px ) ) / 2 ) ) !important;
-	margin-right: var( --wrap-quote-gap, 1.5rem ) !important;
+.wrap-quote.is-style-card.has-voffset {
+	position: relative;
+	background: transparent;
+	padding: calc( var( --wrap-quote-offset-y, 0px ) + 1.5rem ) 1.75rem 1.5rem;
+	shape-outside: inset( var( --wrap-quote-offset-y, 0px ) 0px 0px 0px );
 }
 
-.is-layout-constrained > .wrap-quote.align-right {
-	margin-right: max( 0px, calc( ( 100% - var( --wp--style--global--content-size, 1000px ) ) / 2 ) ) !important;
-	margin-left: var( --wrap-quote-gap, 1.5rem ) !important;
-}
-
-/*
- * Top-align the wrapping text with the top of the quote. Block themes add a
- * block-gap margin-top to the block that follows the quote, dropping the first
- * text line below the quote's top edge. Zero it on the immediately-following
- * sibling so the tops meet.
- */
-.wrap-quote.align-left + *,
-.wrap-quote.align-right + *,
-.is-layout-constrained > .wrap-quote.align-left + *,
-.is-layout-constrained > .wrap-quote.align-right + * {
-	margin-top: 0 !important;
-}
-
-/* =========================================================================
- * CARD look (default). Overridden by native block-support styles (they set
- * inline styles that beat these rules); the Plain style strips them.
- * ========================================================================= */
-
-.wrap-quote:not( .is-style-plain ) {
-	padding: 1.5rem 1.75rem;
+.wrap-quote.is-style-card.has-voffset::before {
+	content: "";
+	position: absolute;
+	top: var( --wrap-quote-offset-y, 0px );
+	right: 0;
+	bottom: 0;
+	left: 0;
 	background: #ffffff;
 	border: 1px solid rgba( 14, 42, 84, 0.1 );
 	border-radius: 12px;
 	box-shadow: 0 8px 24px rgba( 14, 42, 84, 0.06 );
 }
 
+/* Lift the quote content above the card layer. */
+.wrap-quote.is-style-card.has-voffset blockquote,
+.wrap-quote.is-style-card.has-voffset cite {
+	position: relative;
+}
+
 /* =========================================================================
- * Quote content.
+ * FLOAT + WRAP (adapted from the image-text-wrap float engine).
+ * Text-side gap is the float's margin; the horizontal offset lives on the
+ * outer margin (+ insets toward the text, - pulls out toward the page edge).
+ * ========================================================================= */
+
+.wrap-quote.align-left {
+	float: left;
+	margin-left: var( --wrap-quote-offset-x, 0px );
+	margin-right: var( --wrap-quote-gap, 1.5rem );
+}
+
+.wrap-quote.align-right {
+	float: right;
+	margin-right: var( --wrap-quote-offset-x, 0px );
+	margin-left: var( --wrap-quote-gap, 1.5rem );
+}
+
+/*
+ * Constrained layout: pull the float back to the content column (WP centers
+ * non-aligned children with margin:auto, which a float escapes). !important is
+ * required because the layout's centering margins are !important.
+ */
+.is-layout-constrained > .wrap-quote.align-left {
+	margin-left: calc( max( 0px, ( 100% - var( --wp--style--global--content-size, 1000px ) ) / 2 ) + var( --wrap-quote-offset-x, 0px ) ) !important;
+	margin-right: var( --wrap-quote-gap, 1.5rem ) !important;
+}
+
+.is-layout-constrained > .wrap-quote.align-right {
+	margin-right: calc( max( 0px, ( 100% - var( --wp--style--global--content-size, 1000px ) ) / 2 ) + var( --wrap-quote-offset-x, 0px ) ) !important;
+	margin-left: var( --wrap-quote-gap, 1.5rem ) !important;
+}
+
+/*
+ * Keep the theme's normal paragraph spacing around the quote — deliberately no
+ * top-margin reset on the following block (unlike image-text-wrap).
+ */
+
+/* =========================================================================
+ * QUOTE TYPE. Weight + size are set on the <p> (not just the blockquote): the
+ * theme styles paragraphs explicitly, so blockquote-only rules never reach the
+ * quote text. `font-size: inherit` on the blockquote neutralizes any themed
+ * blockquote sizing, so the +2pt is measured from body copy.
  * ========================================================================= */
 
 .wrap-quote blockquote {
@@ -87,38 +117,106 @@
 	border: 0;
 	quotes: none;
 	font-style: normal;
+	font-size: inherit;
+	font-weight: 500;
 }
 
 .wrap-quote blockquote p {
 	margin: 0 0 0.75em;
+	font-weight: 500;               /* medium */
+	font-size: calc( 1em + 2pt );   /* a touch larger than body copy */
 }
 
 .wrap-quote blockquote p:last-child {
 	margin-bottom: 0;
 }
 
-/* Decorative opening quotation mark, gated by the toggle's class. */
+/* Open + close smart-quote marks (bold glyphs), gated by the toggle's class. */
 .wrap-quote.has-quote-mark blockquote::before {
 	content: "\201C";
 	display: block;
+	position: relative;
+	top: 0.06em;               /* a touch lower than the cap line */
 	font-family: Georgia, "Times New Roman", serif;
-	font-size: 3em;
-	line-height: 0.9;
-	margin-bottom: 0.1em;
-	opacity: 0.35;
+	font-size: 3.25em;
+	font-weight: 700;
+	line-height: 0.75;
+	margin-bottom: 0.05em;
+}
+
+.wrap-quote.has-quote-mark blockquote p:last-child::after {
+	content: "\201D";
+	font-family: Georgia, "Times New Roman", serif;
+	font-weight: 700;
+}
+
+/*
+ * Opening-glyph options (the closing mark pairs to match). Default is the serif
+ * double curly above; these override the glyph and/or font.
+ */
+.wrap-quote.mark-sans.has-quote-mark blockquote::before,
+.wrap-quote.mark-sans.has-quote-mark blockquote p:last-child::after {
+	font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.wrap-quote.mark-guillemet.has-quote-mark blockquote::before {
+	content: "\00AB";
+}
+.wrap-quote.mark-guillemet.has-quote-mark blockquote p:last-child::after {
+	content: "\00BB";
+}
+
+.wrap-quote.mark-single.has-quote-mark blockquote::before {
+	content: "\2018";
+}
+.wrap-quote.mark-single.has-quote-mark blockquote p:last-child::after {
+	content: "\2019";
+}
+
+.wrap-quote.mark-low.has-quote-mark blockquote::before {
+	content: "\201E";
+}
+.wrap-quote.mark-low.has-quote-mark blockquote p:last-child::after {
+	content: "\201C";
 }
 
 .wrap-quote cite {
 	display: block;
 	margin-top: 0.9em;
 	font-size: 0.85em;
-	font-style: normal;
-	opacity: 0.75;
+	font-style: italic;
+	opacity: 0.8;
+}
+
+/*
+ * Text alignment (Left default). Right-aligns the quote text, the attribution,
+ * and the inline closing mark that rides the last line — but NOT the opening
+ * mark (a block ::before on the blockquote, so the p's text-align never reaches
+ * it) and NOT the card box (its float/position is unchanged).
+ */
+.wrap-quote.text-right blockquote p,
+.wrap-quote.text-right cite {
+	text-align: right;
+}
+
+/* =========================================================================
+ * CARD style (opt-in): layers card chrome over the default embedded look.
+ * Overridden by native block-support styles when the author sets them.
+ * ========================================================================= */
+
+/* Normal card (no vertical offset): visuals on the figure, so the block's
+   Color/Border/Shadow controls override them. */
+.wrap-quote.is-style-card:not( .has-voffset ) {
+	padding: 1.5rem 1.75rem;
+	background: #ffffff;
+	border: 1px solid rgba( 14, 42, 84, 0.1 );
+	border-radius: 12px;
+	box-shadow: 0 8px 24px rgba( 14, 42, 84, 0.06 );
 }
 
 /* =========================================================================
  * Phones: a floated quote in a very narrow column reads badly, so below 600px
- * drop to full width — no float. Above this the float + wrap is kept.
+ * drop to full width — no float.
  * ========================================================================= */
 
 @media ( max-width: 600px ) {
@@ -129,5 +227,11 @@
 		float: none !important;
 		width: auto !important;
 		margin: 1.5rem 0 !important;
+	}
+
+	/* No float on phones, so drop the text-above gap too. */
+	.wrap-quote.has-voffset {
+		padding-top: 0 !important;
+		shape-outside: none !important;
 	}
 }

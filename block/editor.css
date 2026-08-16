@@ -9,9 +9,3 @@
 	margin-top: 0;
 	margin-bottom: 0;
 }
-
-/* The empty attribution placeholder still needs to be clickable/visible. */
-.wrap-quote cite:empty::before {
-	content: attr( data-rich-text-placeholder );
-	opacity: 0.5;
-}
