@@ -1,0 +1,133 @@
+/**
+ * Wrap Quote — shared front-end + editor styles.
+ *
+ * The per-instance bits (width, text-side gap) are set inline by save(); this
+ * file supplies the structural float, the default card look, the quote mark,
+ * and the responsive fallback the inline styles can't express.
+ *
+ * The <figure class="wrap-quote"> is the block root and the card: block-support
+ * styles (background / border / shadow / padding / typography) land on it and
+ * override the defaults below. The "Plain" block style (.is-style-plain) strips
+ * the card chrome for a bare floated quote.
+ */
+
+.wrap-quote {
+	box-sizing: border-box;
+	margin-top: 0;
+	margin-bottom: 0.5rem;
+	max-width: 100%;
+}
+
+/* =========================================================================
+ * FLOAT + WRAP: the quote floats to one side; text-side gap is the margin.
+ * (Adapted from the image-text-wrap float engine.)
+ * ========================================================================= */
+
+.wrap-quote.align-left {
+	float: left;
+	margin-right: var( --wrap-quote-gap, 1.5rem );
+}
+
+.wrap-quote.align-right {
+	float: right;
+	margin-left: var( --wrap-quote-gap, 1.5rem );
+}
+
+/*
+ * Constrained layout (WordPress default post/page content): the container is
+ * wider than the text column and centers non-aligned blocks with margin:auto.
+ * A float ignores auto margins and escapes to the container's far edge, landing
+ * in the gutter instead of at the content column. Pull it back to the column so
+ * it lines up with the body text. !important is required because WP marks the
+ * layout's centering margins !important.
+ */
+.is-layout-constrained > .wrap-quote.align-left {
+	margin-left: max( 0px, calc( ( 100% - var( --wp--style--global--content-size, 1000px ) ) / 2 ) ) !important;
+	margin-right: var( --wrap-quote-gap, 1.5rem ) !important;
+}
+
+.is-layout-constrained > .wrap-quote.align-right {
+	margin-right: max( 0px, calc( ( 100% - var( --wp--style--global--content-size, 1000px ) ) / 2 ) ) !important;
+	margin-left: var( --wrap-quote-gap, 1.5rem ) !important;
+}
+
+/*
+ * Top-align the wrapping text with the top of the quote. Block themes add a
+ * block-gap margin-top to the block that follows the quote, dropping the first
+ * text line below the quote's top edge. Zero it on the immediately-following
+ * sibling so the tops meet.
+ */
+.wrap-quote.align-left + *,
+.wrap-quote.align-right + *,
+.is-layout-constrained > .wrap-quote.align-left + *,
+.is-layout-constrained > .wrap-quote.align-right + * {
+	margin-top: 0 !important;
+}
+
+/* =========================================================================
+ * CARD look (default). Overridden by native block-support styles (they set
+ * inline styles that beat these rules); the Plain style strips them.
+ * ========================================================================= */
+
+.wrap-quote:not( .is-style-plain ) {
+	padding: 1.5rem 1.75rem;
+	background: #ffffff;
+	border: 1px solid rgba( 14, 42, 84, 0.1 );
+	border-radius: 12px;
+	box-shadow: 0 8px 24px rgba( 14, 42, 84, 0.06 );
+}
+
+/* =========================================================================
+ * Quote content.
+ * ========================================================================= */
+
+.wrap-quote blockquote {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	quotes: none;
+	font-style: normal;
+}
+
+.wrap-quote blockquote p {
+	margin: 0 0 0.75em;
+}
+
+.wrap-quote blockquote p:last-child {
+	margin-bottom: 0;
+}
+
+/* Decorative opening quotation mark, gated by the toggle's class. */
+.wrap-quote.has-quote-mark blockquote::before {
+	content: "\201C";
+	display: block;
+	font-family: Georgia, "Times New Roman", serif;
+	font-size: 3em;
+	line-height: 0.9;
+	margin-bottom: 0.1em;
+	opacity: 0.35;
+}
+
+.wrap-quote cite {
+	display: block;
+	margin-top: 0.9em;
+	font-size: 0.85em;
+	font-style: normal;
+	opacity: 0.75;
+}
+
+/* =========================================================================
+ * Phones: a floated quote in a very narrow column reads badly, so below 600px
+ * drop to full width — no float. Above this the float + wrap is kept.
+ * ========================================================================= */
+
+@media ( max-width: 600px ) {
+	.wrap-quote.align-left,
+	.wrap-quote.align-right,
+	.is-layout-constrained > .wrap-quote.align-left,
+	.is-layout-constrained > .wrap-quote.align-right {
+		float: none !important;
+		width: auto !important;
+		margin: 1.5rem 0 !important;
+	}
+}

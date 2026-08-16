@@ -1,0 +1,59 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "wrap-quote/wrap-quote",
+	"version": "1.0.0",
+	"title": "Wrap Quote",
+	"category": "text",
+	"icon": "format-quote",
+	"description": "A pull quote that floats into your copy so the body text wraps around it, print-style. Float left or right, set the width, and style it as a card or plain.",
+	"keywords": [ "quote", "pull quote", "blockquote", "float", "text wrap" ],
+	"textdomain": "wrap-quote",
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"className": true,
+		"color": {
+			"background": true,
+			"text": true,
+			"gradients": true,
+			"link": false
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true,
+			"__experimentalDefaultControls": { "color": true, "radius": true, "width": true }
+		},
+		"shadow": true,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true,
+			"__experimentalFontStyle": true,
+			"__experimentalFontWeight": true,
+			"__experimentalLetterSpacing": true,
+			"__experimentalTextTransform": true,
+			"__experimentalTextDecoration": true
+		}
+	},
+	"styles": [
+		{ "name": "card", "label": "Card", "isDefault": true },
+		{ "name": "plain", "label": "Plain" }
+	],
+	"attributes": {
+		"quote": { "type": "string", "source": "html", "selector": "blockquote", "multiline": "p", "default": "" },
+		"citation": { "type": "string", "source": "html", "selector": "cite", "default": "" },
+		"side": { "type": "string", "default": "right" },
+		"width": { "type": "number", "default": 320 },
+		"gap": { "type": "number", "default": 24 },
+		"showMark": { "type": "boolean", "default": true }
+	},
+	"editorScript": "wrap-quote-editor",
+	"style": "wrap-quote-style",
+	"editorStyle": "wrap-quote-editor-style"
+}
