@@ -131,9 +131,15 @@
 	margin-bottom: 0;
 }
 
-/* Open + close smart-quote marks (bold glyphs), gated by the toggle's class. */
+/* Open + close smart-quote marks (bold glyphs), gated by the toggle's class.
+ * Each mark declares the plain glyph, then the same glyph with an empty alt
+ * (content: "X" / "") so engines that support content alt-text hide the purely
+ * decorative glyph from assistive tech. Engines without alt-text support treat
+ * the second declaration as invalid and keep the first, so the mark is never
+ * lost, no screen reader announces "left double quotation mark", et al. */
 .wrap-quote.has-quote-mark blockquote::before {
 	content: "\201C";
+	content: "\201C" / "";
 	display: block;
 	position: relative;
 	top: 0.06em;               /* a touch lower than the cap line */
@@ -146,6 +152,7 @@
 
 .wrap-quote.has-quote-mark blockquote p:last-child::after {
 	content: "\201D";
+	content: "\201D" / "";
 	font-family: Georgia, "Times New Roman", serif;
 	font-weight: 700;
 }
@@ -161,23 +168,29 @@
 
 .wrap-quote.mark-guillemet.has-quote-mark blockquote::before {
 	content: "\00AB";
+	content: "\00AB" / "";
 }
 .wrap-quote.mark-guillemet.has-quote-mark blockquote p:last-child::after {
 	content: "\00BB";
+	content: "\00BB" / "";
 }
 
 .wrap-quote.mark-single.has-quote-mark blockquote::before {
 	content: "\2018";
+	content: "\2018" / "";
 }
 .wrap-quote.mark-single.has-quote-mark blockquote p:last-child::after {
 	content: "\2019";
+	content: "\2019" / "";
 }
 
 .wrap-quote.mark-low.has-quote-mark blockquote::before {
 	content: "\201E";
+	content: "\201E" / "";
 }
 .wrap-quote.mark-low.has-quote-mark blockquote p:last-child::after {
 	content: "\201C";
+	content: "\201C" / "";
 }
 
 .wrap-quote cite {
@@ -185,7 +198,8 @@
 	margin-top: 0.9em;
 	font-size: 0.85em;
 	font-style: italic;
-	opacity: 0.8;
+	/* De-emphasized by size + italic, not opacity (opacity blends toward the
+	   background and erodes contrast). */
 }
 
 /*
@@ -233,5 +247,16 @@
 	.wrap-quote.has-voffset {
 		padding-top: 0 !important;
 		shape-outside: none !important;
+	}
+
+	/* Card + offset draws its card as a ::before positioned at the offset; with
+	 * the float and gap gone on phones, restore the normal card padding and pull
+	 * the card layer back to the top so it sits under the content again. */
+	.wrap-quote.is-style-card.has-voffset {
+		padding-top: 1.5rem !important;
+	}
+
+	.wrap-quote.is-style-card.has-voffset::before {
+		top: 0 !important;
 	}
 }

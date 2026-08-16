@@ -4,7 +4,7 @@ Tags: pull quote, blockquote, quote, float, text wrap
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,12 @@ Below 600px the quote drops to full width with the text above and below it, so a
 
 == Changelog ==
 
+= 1.0.1 =
+* Card style with a vertical offset now lays out correctly on phones (below 600px the card background no longer detaches from the quote).
+* The decorative quote marks are hidden from screen readers, so they are no longer read aloud as "left double quotation mark" and the like.
+* Dropped the opacity on the attribution line so its text keeps full contrast.
+* Hardened the attribution's sanitization fallback.
+
 = 1.0.0 =
 * Initial release.
 * Pull quote that floats left or right with the body text wrapping around it.
@@ -81,6 +87,9 @@ Below 600px the quote drops to full width with the text above and below it, so a
 * Static HTML save, so content survives editor updates and plugin deactivation.
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Mobile layout fix for card quotes with a vertical offset, plus accessibility and security hardening.
 
 = 1.0.0 =
 Initial release.

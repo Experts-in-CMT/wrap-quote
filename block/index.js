@@ -27,10 +27,14 @@
 	var ToggleControl = components.ToggleControl;
 	var TextareaControl = components.TextareaControl;
 
-	// Strips scripts and on* event attributes; keeps simple inline markup.
+	// window.wp.dom.safeHTML strips <script> and on* handlers for the editor
+	// preview only; it is NOT the security boundary. The real gate is server-side
+	// KSES, which filters the saved <cite> for authors without unfiltered_html.
+	// If wp.dom is ever unavailable, fail CLOSED (strip all tags) rather than
+	// passing raw HTML through RawHTML.
 	var safeHTML = ( window.wp.dom && window.wp.dom.safeHTML )
 		? window.wp.dom.safeHTML
-		: function ( h ) { return h; };
+		: function ( h ) { return String( h ).replace( /<[^>]*>/g, '' ); };
 
 	/**
 	 * Build the figure's className + inline style from attributes.
@@ -192,8 +196,8 @@
 			} ),
 			// Attribution is edited in the sidebar (a nested RichText inside the
 			// figure doesn't reliably take focus); here it's display-only so the
-			// canvas previews it. safeHTML strips scripts/on* so a stored payload
-			// can't run in wp-admin, while simple inline markup still renders.
+			// canvas previews it. safeHTML sanitizes THIS preview only; saved
+			// content is gated by server-side KSES (see the safeHTML note above).
 			attrs.citation && attrs.citation.length
 				? el( 'cite', {}, el( RawHTML, {}, safeHTML( attrs.citation ) ) )
 				: null
