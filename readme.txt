@@ -4,7 +4,7 @@ Tags: pull quote, blockquote, quote, float, text wrap
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,9 @@ Below 600px the quote drops to full width with the text above and below it, so a
 
 == Changelog ==
 
+= 1.1.0 =
+* The attribution is now output as a figcaption element instead of cite, which is the correct semantics (cite is for the title of a work, not a person). Quotes published under earlier versions migrate automatically on first edit.
+
 = 1.0.1 =
 * Card style with a vertical offset now lays out correctly on phones (below 600px the card background no longer detaches from the quote).
 * The decorative quote marks are hidden from screen readers, so they are no longer read aloud as "left double quotation mark" and the like.
@@ -87,6 +90,9 @@ Below 600px the quote drops to full width with the text above and below it, so a
 * Static HTML save, so content survives editor updates and plugin deactivation.
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+The attribution now uses a figcaption element for correct semantics. Existing quotes update automatically on first edit.
 
 = 1.0.1 =
 Mobile layout fix for card quotes with a vertical offset, plus accessibility and security hardening.

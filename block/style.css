@@ -62,7 +62,7 @@
 
 /* Lift the quote content above the card layer. */
 .wrap-quote.is-style-card.has-voffset blockquote,
-.wrap-quote.is-style-card.has-voffset cite {
+.wrap-quote.is-style-card.has-voffset figcaption {
 	position: relative;
 }
 
@@ -193,7 +193,7 @@
 	content: "\201C" / "";
 }
 
-.wrap-quote cite {
+.wrap-quote figcaption {
 	display: block;
 	margin-top: 0.9em;
 	font-size: 0.85em;
@@ -209,7 +209,7 @@
  * it) and NOT the card box (its float/position is unchanged).
  */
 .wrap-quote.text-right blockquote p,
-.wrap-quote.text-right cite {
+.wrap-quote.text-right figcaption {
 	text-align: right;
 }
 

@@ -2,7 +2,7 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "wrap-quote/wrap-quote",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"title": "Wrap Quote",
 	"category": "text",
 	"icon": "format-quote",
@@ -47,7 +47,7 @@
 	],
 	"attributes": {
 		"quote": { "type": "string", "source": "html", "selector": "blockquote", "multiline": "p", "default": "" },
-		"citation": { "type": "string", "source": "html", "selector": "cite", "default": "" },
+		"citation": { "type": "string", "source": "html", "selector": "figcaption", "default": "" },
 		"side": { "type": "string", "default": "right" },
 		"width": { "type": "number", "default": 320 },
 		"gap": { "type": "number", "default": 24 },

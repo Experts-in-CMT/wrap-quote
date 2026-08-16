@@ -199,7 +199,7 @@
 			// canvas previews it. safeHTML sanitizes THIS preview only; saved
 			// content is gated by server-side KSES (see the safeHTML note above).
 			attrs.citation && attrs.citation.length
-				? el( 'cite', {}, el( RawHTML, {}, safeHTML( attrs.citation ) ) )
+				? el( 'figcaption', {}, el( RawHTML, {}, safeHTML( attrs.citation ) ) )
 				: null
 		);
 
@@ -224,6 +224,39 @@
 			// <figure> and italicizes/inlines the rest of the article (and breaks
 			// the content max-width). Matches the edit-canvas render.
 			attrs.citation && attrs.citation.length
+				? el( 'figcaption', {}, el( RawHTML, {}, safeHTML( attrs.citation ) ) )
+				: null
+		);
+	}
+
+	/* Deprecation: v1.0.x saved the attribution in <cite>; v1.1 uses <figcaption>
+	 * (correct semantics — <cite> is for a work's title, not a person). Register
+	 * the old cite-based save so posts published under v1.0.x still validate and
+	 * migrate cleanly; the citation value is re-extracted from <cite> and re-saved
+	 * as <figcaption>. Only the attribution tag changed, so quoteProps (the
+	 * figure's className/style) is reused unchanged. */
+	var DEPRECATED_ATTRS = {
+		quote: { type: 'string', source: 'html', selector: 'blockquote', multiline: 'p', default: '' },
+		citation: { type: 'string', source: 'html', selector: 'cite', default: '' },
+		side: { type: 'string', default: 'right' },
+		width: { type: 'number', default: 320 },
+		gap: { type: 'number', default: 24 },
+		offsetX: { type: 'number', default: 0 },
+		offsetY: { type: 'number', default: 0 },
+		textAlign: { type: 'string', default: 'left' },
+		showMark: { type: 'boolean', default: true },
+		markGlyph: { type: 'string', default: 'double' }
+	};
+
+	function saveV1cite( props ) {
+		var attrs = props.attributes;
+		var qp = quoteProps( attrs );
+		var blockProps = useBlockProps.save( { className: qp.className, style: qp.style } );
+		return el(
+			'figure',
+			blockProps,
+			el( RichText.Content, { tagName: 'blockquote', multiline: 'p', value: attrs.quote } ),
+			attrs.citation && attrs.citation.length
 				? el( 'cite', {}, el( RawHTML, {}, safeHTML( attrs.citation ) ) )
 				: null
 		);
@@ -231,6 +264,9 @@
 
 	blocks.registerBlockType( 'wrap-quote/wrap-quote', {
 		edit: Edit,
-		save: Save
+		save: Save,
+		deprecated: [
+			{ attributes: DEPRECATED_ATTRS, save: saveV1cite }
+		]
 	} );
 } )( window.wp.blocks, window.wp.element, window.wp.blockEditor, window.wp.components, window.wp.i18n );
