@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Wrap Quote
- * Description: A pull-quote block that floats into your copy so the body text wraps around it, print-style. Float left or right, set the width, and style it as a card or plain.
+ * Description: A pull-quote block that floats into your copy so the body text wraps around it, print-style. Float left or right, set the width, flow text above it, and add an optional card.
  * Version: 1.0.0
  * Author: Kenneth Raymond
  * Requires at least: 6.4

@@ -6,7 +6,7 @@
 	"title": "Wrap Quote",
 	"category": "text",
 	"icon": "format-quote",
-	"description": "A pull quote that floats into your copy so the body text wraps around it, print-style. Float left or right, set the width, and style it as a card or plain.",
+	"description": "A pull quote that floats into your copy so the body text wraps around it, print-style. Float left or right, set the width, flow text above it, and add an optional card.",
 	"keywords": [ "quote", "pull quote", "blockquote", "float", "text wrap" ],
 	"textdomain": "wrap-quote",
 	"supports": {
