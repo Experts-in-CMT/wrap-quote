@@ -16,6 +16,10 @@
 	box-sizing: border-box;
 	margin-bottom: 0.5rem;
 	max-width: 100%;
+	/* Default quote weight. It lives on the figure (not pinned on the <p>) so the
+	 * Typography -> Appearance control, which WordPress emits as an inline
+	 * font-weight on the figure, overrides it; the quote text inherits it below. */
+	font-weight: 500;
 }
 
 /*
@@ -105,10 +109,17 @@
  */
 
 /* =========================================================================
- * QUOTE TYPE. Weight + size are set on the <p> (not just the blockquote): the
- * theme styles paragraphs explicitly, so blockquote-only rules never reach the
- * quote text. `font-size: inherit` on the blockquote neutralizes any themed
- * blockquote sizing, so the +2pt is measured from body copy.
+ * QUOTE TYPE. The default weight (500) lives on the figure (above) so the
+ * Typography -> Appearance control can override it; the blockquote and its
+ * paragraphs take that weight with `font-weight: inherit`. Inherit at this
+ * selector (specificity 0,1,2) still beats the theme's explicit paragraph
+ * weight (`:root :where(p)` from theme.json core/paragraph, specificity 0,1,0),
+ * which is why the weight was originally pinned on the <p> — now the pin is a
+ * figure default the author's Appearance value replaces.
+ *
+ * Size is pinned on the <p> (the theme styles paragraph size explicitly), and
+ * `font-size: inherit` on the blockquote neutralizes any themed blockquote
+ * sizing so the +2pt is measured from body copy.
  * ========================================================================= */
 
 .wrap-quote blockquote {
@@ -118,12 +129,13 @@
 	quotes: none;
 	font-style: normal;
 	font-size: inherit;
-	font-weight: 500;
+	font-weight: inherit;   /* the figure's 500 default, or the Appearance value */
 }
 
 .wrap-quote blockquote p {
 	margin: 0 0 0.75em;
-	font-weight: 500;               /* medium */
+	font-weight: inherit;           /* inherits the figure's weight (beats the
+	                                   theme's explicit paragraph weight) */
 	font-size: calc( 1em + 2pt );   /* a touch larger than body copy */
 }
 
@@ -198,8 +210,19 @@
 	margin-top: 0.9em;
 	font-size: 0.85em;
 	font-style: italic;
+	/* Keep the attribution at its normal weight. The figure now carries the 500
+	   quote default, which the attribution would otherwise inherit; pinning it
+	   here preserves the intended light attribution and keeps the Appearance
+	   control driving the quote text, not this line. */
+	font-weight: 400;
 	/* De-emphasized by size + italic, not opacity (opacity blends toward the
 	   background and erodes contrast). */
+}
+
+/* Legacy <cite> attributions (saved before the 1.1 figcaption migration, until
+   re-edited) keep normal weight too, so the figure's 500 default never bolds them. */
+.wrap-quote cite {
+	font-weight: 400;
 }
 
 /*

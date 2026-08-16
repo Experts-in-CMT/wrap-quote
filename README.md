@@ -30,7 +30,7 @@ Requires WordPress 6.4+ and PHP 7.4+.
 
 ## How it works
 
-The block is a `<figure class="wrap-quote">` (the block root, so block-support styles land on it) wrapping a `<blockquote>` and an optional `<cite>`. It floats to one side; per-instance values (width, gap, offsets) are inline `--wrap-quote-*` custom properties. The float + wrap geometry is the same engine used by [image-text-wrap](https://github.com/Experts-in-CMT/image-text-wrap); the vertical offset uses `shape-outside` (kept in the stylesheet, driven by the offset variable) so the following paragraph flows above the quote.
+The block is a `<figure class="wrap-quote">` (the block root, so block-support styles land on it) wrapping a `<blockquote>` and an optional `<figcaption>`. It floats to one side; per-instance values (width, gap, offsets) are inline `--wrap-quote-*` custom properties. The float + wrap geometry is the same engine used by [image-text-wrap](https://github.com/Experts-in-CMT/image-text-wrap); the vertical offset uses `shape-outside` (kept in the stylesheet, driven by the offset variable) so the following paragraph flows above the quote.
 
 Because a float only affects the text after it, the paragraph *before* the quote cannot wrap around it (that would need CSS Exclusions, which no browser supports); the vertical offset flows the following paragraph above the quote instead.
 

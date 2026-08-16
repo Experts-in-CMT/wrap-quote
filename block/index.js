@@ -21,6 +21,10 @@
 	var RichText = blockEditor.RichText;
 	var InspectorControls = blockEditor.InspectorControls;
 
+	var useRef = element.useRef;
+	var useEffect = element.useEffect;
+	var useCallback = element.useCallback;
+
 	var PanelBody = components.PanelBody;
 	var SelectControl = components.SelectControl;
 	var RangeControl = components.RangeControl;
@@ -94,6 +98,57 @@
 		var qp = quoteProps( attrs );
 
 		var blockProps = useBlockProps( { className: qp.className, style: qp.style } );
+
+		// Paste as plain text into the quote: strip any inline formatting, links,
+		// or colors the source carried so pasted text takes on the quote's own
+		// styling. RichText has no public plain-paste prop here, and disabling
+		// formats outright would also strip formatting from already-saved quotes on
+		// edit — so we intercept the paste on the quote's own editable, in the
+		// capture phase (before RichText's handler), and insert the clipboard's
+		// plain text at the caret. RichText's input handler picks up the change.
+		//
+		// The editor canvas is an iframe, so the listener and execCommand must run
+		// against the block node's ownerDocument, not the parent `document`. We
+		// reach that node by merging our ref into the figure's block props ref.
+		var quoteRef = useRef( null );
+		var setQuoteRef = useCallback( function ( node ) {
+			quoteRef.current = node;
+			var r = blockProps.ref;
+			if ( typeof r === 'function' ) {
+				r( node );
+			} else if ( r ) {
+				r.current = node;
+			}
+		}, [ blockProps.ref ] );
+
+		useEffect( function () {
+			var fig = quoteRef.current;
+			if ( ! fig ) {
+				return;
+			}
+			var doc = fig.ownerDocument;
+			function onPaste( e ) {
+				var t = e.target;
+				// Only the quote (a <p> inside the blockquote) is editable here.
+				if ( ! t || ! t.closest || ! t.closest( 'blockquote' ) ) {
+					return;
+				}
+				var cd = e.clipboardData || ( doc.defaultView && doc.defaultView.clipboardData );
+				if ( ! cd ) {
+					return;
+				}
+				var text = cd.getData( 'text/plain' );
+				e.preventDefault();
+				e.stopImmediatePropagation();
+				if ( text && doc.execCommand ) {
+					doc.execCommand( 'insertText', false, text );
+				}
+			}
+			fig.addEventListener( 'paste', onPaste, true );
+			return function () {
+				fig.removeEventListener( 'paste', onPaste, true );
+			};
+		}, [] );
 
 		var controls = el(
 			InspectorControls,
@@ -185,7 +240,7 @@
 
 		var body = el(
 			'figure',
-			blockProps,
+			Object.assign( {}, blockProps, { ref: setQuoteRef } ),
 			el( RichText, {
 				identifier: 'quote',
 				tagName: 'blockquote',

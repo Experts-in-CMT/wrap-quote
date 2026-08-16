@@ -4,7 +4,7 @@ Tags: pull quote, blockquote, quote, float, text wrap
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.1.1
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,14 @@ Below 600px the quote drops to full width with the text above and below it, so a
 
 == Changelog ==
 
+= 1.2.0 =
+* The quote's weight now follows the Typography Appearance control. The medium weight is a default the Appearance setting overrides, instead of a fixed weight the control could not reach.
+* Pasting into the quote now drops the source's inline formatting, so pasted text takes on the quote's own styling.
+
+= 1.1.1 =
+* Fixed quotes published under 1.1.0 showing as invalid content: the figcaption migration now keeps all of the block's color, border, shadow, spacing, and typography settings.
+* Restored being able to click the floated quote in the editor to select it.
+
 = 1.1.0 =
 * The attribution is now output as a figcaption element instead of cite, which is the correct semantics (cite is for the title of a work, not a person). Quotes published under earlier versions migrate automatically on first edit.
 
@@ -90,6 +98,12 @@ Below 600px the quote drops to full width with the text above and below it, so a
 * Static HTML save, so content survives editor updates and plugin deactivation.
 
 == Upgrade Notice ==
+
+= 1.2.0 =
+The Typography Appearance control now sets the quote weight, and pasting into the quote drops the source formatting.
+
+= 1.1.1 =
+Fixes quotes from 1.1.0 showing as invalid content, and restores clicking the floated quote in the editor.
 
 = 1.1.0 =
 The attribution now uses a figcaption element for correct semantics. Existing quotes update automatically on first edit.
